@@ -13,9 +13,21 @@ module.exports = {
   insertComment,
 };
 
-function find() {
-  return db('posts');
+function find(query){
+  const{page =  1, limit = 2, sortby = 'id', sortdir= 'asc'} = query
+  const offset = limit* (page -1);
+
+  let rows = db('posts')
+    .orderBy(sortby, sortdir)
+    .limit(limit)
+    .offset(offset)
+
+    return rows
 }
+
+// function find() {
+//   return db('posts');
+// }
 
 function findById(id) {
   return db('posts').where({ id: Number(id) });

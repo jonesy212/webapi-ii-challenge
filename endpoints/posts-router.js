@@ -4,6 +4,7 @@ const posts = require('../data/db.js')
 
 const router = express.Router();
 
+
 //any url that begins with 
 // /general name/posssibly extra general name
 
@@ -11,6 +12,8 @@ const router = express.Router();
 //router.get etc
 
 router.get('/', (req, res) => {
+
+console.log(req.query)
   posts
     .find(req.query)
     .then(p => res.status(201).json(p))
@@ -36,6 +39,7 @@ router.get("/:id", (req, res) => {
   });
   
   
+
   router.post("/:id", (req, res) => {
     const posts = req.posts;
     posts
@@ -64,7 +68,7 @@ router.get("/:id", (req, res) => {
     })
   });
   }else{
-      res.status(499).json(`{message: Error trying to update }`)
+      res.status(499).json('{message: Error trying to update }')
   }
   });
   
@@ -77,51 +81,12 @@ router.get("/:id", (req, res) => {
         .catch(er => {
           console.log(er)
           res.status(400).json({
-            message: "Cant delete comments" })
+            message: "Error deleting the post.... Please try again" })
           });
     }else{
         res.status(400).json(`{message: Error trying to delete ${id}, please try again}`)
     }
   });
-
-  //add an endpoint that returns all the comments for a post
-
-  router.get("/:id/comments", (req, res) => {
-    posts.findCommentById(req.params.id).then(comment => {
-       res.status(200).json(comment);
-    }).catch(er => {
-        console.log(er);
-        res.status(400).json({
-          message: `Error locating comment ${id}`
-        });
-      });
-  });
-  
-  router.get("/:id", (req, res) => {
-    const postId = req.params.id;
-    posts
-      .findPostComments(postId)
-      .then(p => res.status(201).json(p))
-      .catch(er => {
-        console.log(er);
-        res.status(400).json({
-          message: `Error finding comments for ${postId}`
-        });
-      });
-  });
-  
-  router.post("/:id", (req, res) => {
-    const comment = req.comment;
-    posts
-      .insertComment(comment)
-      .then(p => res.status(201).json(p))
-      .catch(er => {
-        res.status(400).json({
-          message: `Error updating comment${id}, please try again`
-        });
-      });
-  });
-  
 
   //make available for the server to use
   //BY EXPORTING 
