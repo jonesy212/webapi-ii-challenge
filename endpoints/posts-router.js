@@ -84,6 +84,45 @@ router.get("/:id", (req, res) => {
     }
   });
 
+  //add an endpoint that returns all the comments for a post
+
+  router.get("/:id/comments", (req, res) => {
+    posts.findCommentById(req.params.id).then(comment => {
+       res.status(200).json(comment);
+    }).catch(er => {
+        console.log(er);
+        res.status(400).json({
+          message: `Error locating comment ${id}`
+        });
+      });
+  });
+  
+  router.get("/:id", (req, res) => {
+    const postId = req.params.id;
+    posts
+      .findPostComments(postId)
+      .then(p => res.status(201).json(p))
+      .catch(er => {
+        console.log(er);
+        res.status(400).json({
+          message: `Error finding comments for ${postId}`
+        });
+      });
+  });
+  
+  router.post("/:id", (req, res) => {
+    const comment = req.comment;
+    posts
+      .insertComment(comment)
+      .then(p => res.status(201).json(p))
+      .catch(er => {
+        res.status(400).json({
+          message: `Error updating comment${id}, please try again`
+        });
+      });
+  });
+  
+
   //make available for the server to use
   //BY EXPORTING 
 
